@@ -10,7 +10,10 @@ def generate_random_input(X = 2, Y = 10, min = 0, max = 10):
 
 
 class Linear2XPerceptron:
-	def __init__(self, w1, w2, b):
+	def __init__(self, w1 = 1, w2 = 1, b = 0):
+		self.config(w1, w2, b)
+
+	def config(self, w1, w2, b):
 		self.w1 = w1
 		self.w2 = w2
 		self.W = numpy.array([w1, w2])
@@ -28,7 +31,16 @@ def main():
 
   generate_random_input()
 
-  p = Linear2XPerceptron(1, 2, 3)
+  p = Linear2XPerceptron()
+
+  res = p.calc(1,3)
+  print(res)
+
+  res = p.calcv(numpy.array([1, 3]))
+  print(res)
+
+
+  p.config(1, 2, 3)
 
   res = p.calc(1,3)
   print(res)
