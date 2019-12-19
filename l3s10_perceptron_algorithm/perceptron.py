@@ -4,7 +4,7 @@ import numpy
 import time
 
 def generate_random_input(X = 10, Y = 2, min = 0, max = 10):
-	res = numpy.random.randint(min, max, (X, Y))
+	res = numpy.random.uniform(min, max, (X, Y))
 	print('Random int matrix of size ' + str(X) + 'x' + str(Y) + ' created:')
 	print(res)
 	print()
@@ -57,8 +57,16 @@ class Linear2XPerceptron:
 
 	def config(self, w1, w2, b):
 		self.W = numpy.array([w1, w2])
-		self.P = numpy.array([w1, w2, b])
+		self.C = numpy.array([w1, w2, b])
 		self.b = b
+		return self
+
+	def config_vec(self, C):
+		s = C.shape
+		if s[0] != 3:
+			raise Exception('Bad shape ' + str(s) + ' Input data size must be 1x3')
+		self.config(C[0], C[1],C[2])
+		return self
 
 	def calc_once(self, x1, x2):
 		return self.W[0] * x1 + self.W[2] * x2 + self.b
@@ -69,6 +77,30 @@ class Linear2XPerceptron:
 			raise Exception('Bad shape ' + str(s) + ' Input data size must be Nx2')
 		
 		return numpy.asscalar(numpy.dot(self.W, X) + self.b)
+
+def adjust_perceptron(prc, input, lrate = 0.1):
+	s = input.shape
+	if s[0] != 3 and s[1] != None:
+		raise Exception('Bad shape ' + str(s) + ' Input data size must be 1x3')
+
+	print('Adjusting perceptron:')
+
+	print('Perceptron config ' + numpy.array2string(prc.C))	
+	print('Learning rate ' + str(lrate))
+	
+	n = input
+	n[2] = 1 # bias is const
+	print('Input ' + numpy.array2string(n))
+	
+	m = n * lrate
+	print('Correction vector ' + numpy.array2string(m))
+
+	t = prc.C - m
+	print('Adjusted perceptron config ' + numpy.array2string(t))
+	prc.config_vec(t)
+	
+	print()
+	return prc
 
 
 def main():
@@ -82,7 +114,27 @@ def main():
   p.config(1, 2, 3)
 
   for i in x1x2:
-  	print('For input ' + numpy.array2string(i[:-1]) + ' perceptron result is ' + str(p.calc(i[:-1])))
+    print('-----------------------------------------------------------------------')
+
+    cnt = 0
+    res = p.calc(i[:-1])
+    score = 0 if res > 0 else 1
+    while score != i[2]:
+      print('For input ' + numpy.array2string(i) + ' perceptron result is ' + str(p.calc(i[:-1])) + ' and score is ' + str(score))
+
+      adjust_perceptron(p, i, 0.5)
+      res = p.calc(i[:-1])
+      score = 0 if res > 0 else 1
+
+      cnt += 1
+      if cnt > 100:
+      	raise Exception('Allowed adjustments number treshold exceeded')
+      	
+
+    print()
+    print('Result: ' + numpy.array2string(i) + ' perceptron result is ' + str(p.calc(i[:-1])) + ' and score is ' + str(score))
+    print()
+    
 
 if __name__== '__main__':
   main()
