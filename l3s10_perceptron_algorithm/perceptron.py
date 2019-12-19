@@ -56,13 +56,12 @@ class Linear2XPerceptron:
 		self.config(w1, w2, b)
 
 	def config(self, w1, w2, b):
-		self.w1 = w1
-		self.w2 = w2
 		self.W = numpy.array([w1, w2])
+		self.P = numpy.array([w1, w2, b])
 		self.b = b
 
 	def calc_once(self, x1, x2):
-		return self.w1 * x1 + self.w2 * x2 + self.b
+		return self.W[0] * x1 + self.W[2] * x2 + self.b
 
 	def calc(self, X):
 		s = X.shape
@@ -70,7 +69,7 @@ class Linear2XPerceptron:
 			raise Exception('Bad shape ' + str(s) + ' Input data size must be Nx2')
 		
 		return numpy.asscalar(numpy.dot(self.W, X) + self.b)
-		
+
 
 def main():
   print('Hello Perceptron!')
@@ -84,10 +83,6 @@ def main():
 
   for i in x1x2:
   	print('For input ' + numpy.array2string(i[:-1]) + ' perceptron result is ' + str(p.calc(i[:-1])))
-
-  
-
-
 
 if __name__== '__main__':
   main()
