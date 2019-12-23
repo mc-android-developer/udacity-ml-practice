@@ -29,8 +29,8 @@ class Linear2XPerceptron:
 
     def calc(self, X):
         s = X.shape
-        if s[0] != 2:
-            raise Exception('Bad shape ' + str(s) + ' Input data size must be Nx2')
+        if s[0] != 2 or len(s) != 1:
+            raise Exception('Bad shape ' + str(s) + ' Input data size must be 1x2')
 
         return np.asscalar(np.dot(self.W, X) + self.C[2])
 
@@ -65,13 +65,13 @@ def adjust_perceptron(prc, input, lrate=0.1):
 
 
 def single_point_tuning():
-    # input_data = dh.generate_random_input(X=1, Y=2, min=-5, max=5)
+    # Parameters from lesson used
+    # https://classroom.udacity.com/nanodegrees/nd188-bert/parts/a58738e5-e865-4f64-82e9-cbe7a41b272e/modules/67b445a1-38bc-4128-9d8b-58129e849573/lessons/b4ca7aaa-b346-43b1-ae7d-20d27b2eab65/concepts/8ea20904-0215-4e44-afa9-bb5a720bd028
     input_data = np.array([[4, 5]])
 
     viz = vh.Visualizer()
-    viz.add_point_group(input_data, 'red')
+    viz.add_point_group(input_data, vh.Color.RED)
 
-    # prc_config = dh.generate_random_input(X=1, Y=3, min=-5, max=5)
     prc_config = np.array([[3, 4, -10]])
     p = Linear2XPerceptron()
     p.config_vec(prc_config[0])  # start with any random config
@@ -86,49 +86,48 @@ def single_point_tuning():
         viz.show()
 
 
-def main():
-    print('Hello Perceptron!')
-
-    single_point_tuning()
-    exit()
-
-    size = 20
-    input_data = dh.generate_random_input(X=size, Y=3, min=-5, max=5)
-    dh.label_input_data(input_data)
+def n_points_tuning(size, learn_rate=0.1):
+    input_data = dh.generate_random_input(X=size, Y=2, min=-5, max=5)
+    # input_data = np.array([[-1.04768331, 2.97856097], [-3.95843463, 2.03727394]])
+    data_labels = dh.label_input_data(input_data)
 
     p = Linear2XPerceptron()
     p.config(1, 2, 3)  # start with any random config
 
     viz = vh.Visualizer()
-    viz.add_point_data(input_data)
-    viz.add_perceptron(p, 'brown')
+    viz.add_point_data(input_data, data_labels)
+    viz.add_perceptron(p, vh.Color.GREY3)
     viz.show()
 
     convergence_cnt = 0
-    while convergence_cnt < 20:
-        for i in input_data:
+    while convergence_cnt < size:
+        for i in range(0, len(input_data)):
             print('-----------------------------------------------------------------------')
             print('convergence_cnt: ' + str(convergence_cnt))
+            d = input_data[i]
+            l = data_labels[i]
 
-            adj_cnt = 0
-            res = p.calc(i[:-1])
-            score = 0 if res > 0 else 1
+            efforts_cnt = 0
+            res = p.calc(d)
+            score = 1 if res > 0 else 0
 
-            if score == i[2]:
+            if score == l:
                 convergence_cnt += 1
                 continue
 
-            while score != i[2]:
+            while score != l:
                 convergence_cnt = 0
-                print('For input ' + np.array2string(i) + ' perceptron result is ' + str(p.calc(i[:-1])) + ' and score is ' + str(score))
+                print('For input ' + np.array2string(d) + ' perceptron result is ' + str(res) + ' and score is ' + str(score))
 
-                adjust_perceptron(p, i, 0.1)
-                res = p.calc(i[:-1])
-                score = 0 if res > 0 else 1
+                pd = np.array([d[0], d[1], 1])
+                adjust_perceptron(p, pd, learn_rate)
+                res = p.calc(d)
+                score = 1 if res > 0 else 0
 
-                adj_cnt += 1
-                if adj_cnt > 100:
-                    raise Exception('Allowed adjustments number treshold exceeded')
+                # viz.show()
+                efforts_cnt += 1
+                if efforts_cnt > 100:
+                    raise Exception('Allowed perceptron adjustments number exceeded')
 
             if convergence_cnt == 0:
                 break
@@ -138,7 +137,13 @@ def main():
     print('Perceptron automatic adjustment completed')
     print('Result config ' + np.array2string(p.C))
 
+    viz.add_perceptron(p, vh.Color.YELLOW)
     viz.show()
+
+
+def main():
+    print('Hello Perceptron!')
+    n_points_tuning(100, 0.01)
 
 
 if __name__ == '__main__':

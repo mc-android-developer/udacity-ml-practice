@@ -4,6 +4,20 @@ import matplotlib.pyplot as mp
 import numpy as np
 
 
+class Color:
+    RED = [1, 0, 0]
+    GREEN = [0, 1, 0]
+    BLUE = [0, 0, 1]
+    CYAN = [0, 0.7, 0.7]
+    PURPLE = [0.7, 0, 0.7]
+    YELLOW = [0.7, 0.7, 0]
+    BLACK = [0, 0, 0]
+    WHITE = [1, 1, 1]
+    GREY3 = [0.3, 0.3, 0.3]
+    GREY2 = [0.5, 0.5, 0.5]
+    GREY1 = [0.7, 0.7, 0.7]
+
+
 class Visualizer:
     def __init__(self, title='', pointsize=6):
         self.pointsize = pointsize
@@ -13,24 +27,40 @@ class Visualizer:
         self.perceptrons = list()
         self.perceptron_colors = list()
 
-    def add_point_data(self, data):
+    def add_point_data(self, data, labels):
         g0 = list()
         g1 = list()
-        for i in data:
-            if i[2] == 0:
-                g0.append(i[0:2])
-            elif i[2] == 1:
-                g1.append(i[0:2])
+        for i in range(0, len(labels)):
+            l = labels[i]
+            d = data[i]
+            if l == 0:
+                g0.append(d)
+            elif l == 1:
+                g1.append(d)
             else:
-                raise Exception('Unknown data label: ' + str(i[0:2]))
+                raise Exception('Unknown data label: ' + str(i))
         g0 = np.array(g0)
         g1 = np.array(g1)
 
-        self.add_point_group(g0, 'red')
-        self.add_point_group(g1, 'blue')
+        self.add_point_group(g0, Color.RED)
+        self.add_point_group(g1, Color.BLUE)
+
+    def clear(self):
+        self.clear_perceptrons()
+        self.clear_point_groups()
+
+    def clear_point_groups(self):
+        self.point_groups.clear()
+        self.point_colors.clear()
+
+    def clear_perceptrons(self):
+        self.perceptrons.clear()
+        self.perceptron_colors.clear()
 
     def add_point_group(self, group, color):
         s = group.shape
+        if len(s) == 1:
+            return
         if s[1] != 2:
             raise Exception('Bad shape ' + str(s) + ' Input data size must be Nx2')
 
@@ -67,12 +97,11 @@ class Visualizer:
             if max > max_y:
                 max_y = max
 
-        if min_x == max_x:
-            min_x -= 5
-            max_x += 5
-        if min_y == max_y:
-            min_y -= 5
-            max_y += 5
+        ext_pts = 3
+        min_x -= ext_pts
+        max_x += ext_pts
+        min_y -= ext_pts
+        max_y += ext_pts
 
         for i in range(0, len(self.perceptrons)):
             c = self.perceptron_colors[i]
@@ -87,9 +116,12 @@ class Visualizer:
                 x += step
 
             pg = np.array(prep_func)
-            mp.plot(pg[:, 0:1], pg[:, 1:2], markerfacecolor=c)
+            mp.plot(pg[:, 0:1], pg[:, 1:2], color=c)
 
-        mp.axhline(y=0, color='gray')
-        mp.axvline(x=0, color='gray')
+        mp.axhline(y=0, color=Color.GREY2)
+        mp.axvline(x=0, color=Color.GREY2)
         mp.title(self.title)
+
+        cfm = mp.get_current_fig_manager()
+        cfm.window.maximize()
         mp.show()
