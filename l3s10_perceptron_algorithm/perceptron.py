@@ -16,7 +16,7 @@ class Linear2XPerceptron:
 
     def config_vec(self, C):
         s = C.shape
-        if s[0] != 3:
+        if s[0] != 3 or len(s) > 1:
             raise Exception('Bad shape ' + str(s) + ' Input data size must be 1x3')
         self.config(C[0], C[1], C[2])
         return self
@@ -25,7 +25,7 @@ class Linear2XPerceptron:
         return self.C[0] * x1 + self.C[1] * x2 + self.C[2]
 
     def calc_var(self, x1):
-        return (self.C[0] * x1 + self.C[2]) / (-1 * self.C[1])
+        return np.sum((self.C[0] * x1 + self.C[2]) / (-1 * self.C[1]))
 
     def calc(self, X):
         s = X.shape
@@ -37,7 +37,7 @@ class Linear2XPerceptron:
 
 def adjust_perceptron(prc, input, lrate=0.1):
     s = input.shape
-    if s[0] != 3 and s[1] != None:
+    if s[0] < 3 or len(s) != 1:
         raise Exception('Bad shape ' + str(s) + ' Input data size must be 1x3')
 
     print('Adjusting perceptron:')
@@ -52,7 +52,11 @@ def adjust_perceptron(prc, input, lrate=0.1):
     m = n * lrate
     print('Correction vector ' + np.array2string(m))
 
-    t = prc.C - m
+    r = prc.calc(input[0:2])
+    if r > 0:
+        m *= -1
+
+    t = prc.C + m
     print('Adjusted perceptron config ' + np.array2string(t))
     prc.config_vec(t)
 
@@ -60,8 +64,33 @@ def adjust_perceptron(prc, input, lrate=0.1):
     return prc
 
 
+def single_point_tuning():
+    # input_data = dh.generate_random_input(X=1, Y=2, min=-5, max=5)
+    input_data = np.array([[4, 5]])
+
+    viz = vh.Visualizer()
+    viz.add_point_group(input_data, 'red')
+
+    # prc_config = dh.generate_random_input(X=1, Y=3, min=-5, max=5)
+    prc_config = np.array([[3, 4, -10]])
+    p = Linear2XPerceptron()
+    p.config_vec(prc_config[0])  # start with any random config
+    viz.add_perceptron(p, 'black')
+    viz.show()
+
+    y = p.calc_var(input_data[0])
+    while y != input_data[0, 1]:
+        i = np.array([input_data[0, 0], input_data[0, 1], 1])
+        adjust_perceptron(p, i, 0.01)
+        y = p.calc_var(input_data[0])
+        viz.show()
+
+
 def main():
     print('Hello Perceptron!')
+
+    single_point_tuning()
+    exit()
 
     size = 20
     input_data = dh.generate_random_input(X=size, Y=3, min=-5, max=5)

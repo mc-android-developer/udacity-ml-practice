@@ -32,7 +32,7 @@ class Visualizer:
     def add_point_group(self, group, color):
         s = group.shape
         if s[1] != 2:
-            raise Exception('Bad shape ' + str(s) + ' Input data size must be 2xN')
+            raise Exception('Bad shape ' + str(s) + ' Input data size must be Nx2')
 
         self.point_colors.append(color)
         self.point_groups.append(group)
@@ -66,6 +66,13 @@ class Visualizer:
             max = np.asscalar(np.amax(g[:, 1:2], axis=0))
             if max > max_y:
                 max_y = max
+
+        if min_x == max_x:
+            min_x -= 5
+            max_x += 5
+        if min_y == max_y:
+            min_y -= 5
+            max_y += 5
 
         for i in range(0, len(self.perceptrons)):
             c = self.perceptron_colors[i]

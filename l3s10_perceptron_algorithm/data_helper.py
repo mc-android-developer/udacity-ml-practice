@@ -11,19 +11,21 @@ def generate_random_input(X=10, Y=2, min=0, max=10):
 
 def label_input_data(data):
 	s = data.shape
-	if s[1] != 3:
-		raise Exception('Bad shape ' + str(s) + ' Input data size must be Nx3')
+	if s[1] != 2:
+		raise Exception('Bad shape ' + str(s) + ' Input data size must be Nx2')
 
+	res = list()
 	for i in data:
 		# Labling logic can be adjusted here
 		score = i[0] * 3 + i[1] * 2 + 5
 		if score > 2:
-			i[2] = 1
+			res.append(1)
 		else:
-			i[2] = 0
+			res.append(0)
 
-	print('Input data labled: ')
-	print(data)
+	res = np.array(res)
+	print('Input data labels: ')
+	print(res)
 	print()
 	return data
 
