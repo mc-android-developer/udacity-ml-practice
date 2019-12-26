@@ -88,7 +88,7 @@ def single_point_tuning():
 
 
 def n_points_tuning(size, learn_rate=0.1):
-    input_data = dh.generate_random_input(X=size, Y=2, min=-5, max=5)
+    input_data = dh.generate_random_floats(X=size, Y=2, min=-5, max=5)
     # input_data = np.array([[-1.04768331, 2.97856097], [-3.95843463, 2.03727394]])
     data_labels = dh.label_input_data(input_data)
 

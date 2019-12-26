@@ -1,9 +1,17 @@
 import numpy as np
 
 
-def generate_random_input(X=10, Y=2, min=0, max=10):
+def generate_random_floats(X=10, Y=2, min=0, max=10):
     res = np.random.uniform(min, max, (X, Y))
-    print('Random int matrix of size ' + str(X) + 'x' + str(Y) + ' created:')
+    print('Random matrix of floats of size ' + str(X) + 'x' + str(Y) + ' created:')
+    print(res)
+    print()
+    return res
+
+
+def generate_random_ints(X=10, Y=2, min=0, max=10):
+    res = np.random.randint(min, max + 1, (X, Y))
+    print('Random matrix of ints of size ' + str(X) + 'x' + str(Y) + ' created:')
     print(res)
     print()
     return res
