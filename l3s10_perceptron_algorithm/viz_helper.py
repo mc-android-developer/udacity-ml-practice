@@ -27,6 +27,18 @@ class Visualizer:
         self.perceptrons = list()
         self.perceptron_colors = list()
 
+    def clear(self):
+        self.clear_perceptrons()
+        self.clear_point_groups()
+
+    def clear_point_groups(self):
+        self.point_groups.clear()
+        self.point_colors.clear()
+
+    def clear_perceptrons(self):
+        self.perceptrons.clear()
+        self.perceptron_colors.clear()
+
     def add_point_data(self, data, labels):
         g0 = list()
         g1 = list()
@@ -44,18 +56,6 @@ class Visualizer:
 
         self.add_point_group(g0, Color.RED)
         self.add_point_group(g1, Color.BLUE)
-
-    def clear(self):
-        self.clear_perceptrons()
-        self.clear_point_groups()
-
-    def clear_point_groups(self):
-        self.point_groups.clear()
-        self.point_colors.clear()
-
-    def clear_perceptrons(self):
-        self.perceptrons.clear()
-        self.perceptron_colors.clear()
 
     def add_point_group(self, group, color):
         s = group.shape
