@@ -3,7 +3,7 @@
 import numpy
 
 # Two matrices are initialized by value
-x = numpy.array([[1, 2], [4, 5]])
+x = numpy.array([[1, 2], [3, 4]])
 y = numpy.array([[7, 8], [9, 10]])
 
 print("X: ")
@@ -46,11 +46,17 @@ print(numpy.sum(y))
 print()
 
 print("The column wise summation  : ")
-print(numpy.sum(y,axis=0))
+print(numpy.sum(y, axis=0))
 print()
 
 print("The row wise summation: ")
-print(numpy.sum(y,axis=1))
+print(numpy.sum(y, axis=1))
+print()
+
+# exp(x) = pow(math.e, x)
+# for each cell of matrix set it to be math.e ^ x
+print("The exp(x): ")
+print(numpy.exp(x))
 print()
 
 # using "T" to transpose the matrix
