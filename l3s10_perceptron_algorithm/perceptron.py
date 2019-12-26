@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 
-import data_helper as dh
 import numpy as np
-import viz_helper as vh
+
+import utils.data_helper as dh
+import utils.viz_helper as vh
 
 
 class Linear2XPerceptron:
