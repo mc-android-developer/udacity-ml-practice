@@ -14,14 +14,26 @@ print("Y: ")
 print(y)
 print()
 
+#  matrix * const = each cell of matrix multiplied to const
+print("Multiply matrix to const x*2: ")
+n = 2 * x
+print(n)
+print()
+
+#  matrix + const = const added to each cell of matrix
+print("Multiply matrix to const x+10: ")
+n = 10 + x
+print(n)
+print()
+
 #  add()is used to add matrices
 print("Addition of two matrices: ")
-print(numpy.add(x,y))
+print(numpy.add(x, y))
 print()
 
 # subtract()is used to subtract matrices
 print("Subtraction of two matrices : ")
-print(numpy.subtract(x,y))
+print(numpy.subtract(x, y))
 print()
 
 # divide()is used to divide matrices
@@ -60,6 +72,16 @@ print(numpy.exp(x))
 print()
 
 # using "T" to transpose the matrix
-print("Matrix transposition : ")
+print("Matrix transposition: ")
 print(x.T)
+print()
+
+print("Generate range(-1, 1) matrix of floats with 0.1 step: ")
+N = numpy.arange(-1, 1, 0.1)
+print(N)
+print()
+
+print("Generate range(-10, 10) matrix of ints with 2 step: ")
+N = numpy.arange(-10, 11, 2, numpy.int16)
+print(N)
 print()
