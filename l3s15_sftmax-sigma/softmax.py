@@ -8,6 +8,14 @@ import utils.data_helper as dh
 import utils.viz_helper as vh
 
 
+class VizSigmoid(vh.VizFunc):
+    def f(self, x):
+        return sigmoid_func(x)
+
+    def limits(self):
+        return -10, 10
+
+
 def sigmoid_func(x):
     return 1 / (1 + pow(math.e, (-1 * x)))
 
@@ -20,13 +28,13 @@ def softmax_func(x):
     return x
 
 
-def softmax(L):
-    expL = np.exp(L)
-    sumExpL = sum(expL)
-    result = []
-    for i in expL:
-        result.append(i * 1.0 / sumExpL)
-    return result
+# def softmax(L):
+#     expL = np.exp(L)
+#     sumExpL = sum(expL)
+#     result = []
+#     for i in expL:
+#         result.append(i * 1.0 / sumExpL)
+#     return result
 
 
 def main():
@@ -45,7 +53,8 @@ def main():
     print()
 
     viz = vh.Visualizer()
-    viz.add_point_group(input_data, vh.Color.RED)
+    svf = VizSigmoid()
+    viz.add_func(svf, vh.Color.RED)
     viz.show()
 
     # res = softmax([5.0, 6.0, 7.0])

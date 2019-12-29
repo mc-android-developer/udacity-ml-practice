@@ -18,26 +18,38 @@ class Color:
     GREY1 = [0.7, 0.7, 0.7]
 
 
+class VizFunc:
+    """
+     This is generic interface for function which can be rendered by Visualizer class
+    """
+
+    def f(self, x):
+        return 0
+
+    def limits(self):
+        return 0, 0
+
+
 class Visualizer:
     def __init__(self, title='', pointsize=6):
         self.pointsize = pointsize
         self.title = title
         self.point_groups = list()
         self.point_colors = list()
-        self.perceptrons = list()
-        self.perceptron_colors = list()
+        self.func = list()
+        self.func_colors = list()
 
     def clear(self):
-        self.clear_perceptrons()
+        self.clear_funcs()
         self.clear_point_groups()
 
     def clear_point_groups(self):
         self.point_groups.clear()
         self.point_colors.clear()
 
-    def clear_perceptrons(self):
-        self.perceptrons.clear()
-        self.perceptron_colors.clear()
+    def clear_funcs(self):
+        self.func.clear()
+        self.func_colors.clear()
 
     def add_point_data(self, data, labels):
         g0 = list()
@@ -67,56 +79,54 @@ class Visualizer:
         self.point_colors.append(color)
         self.point_groups.append(group)
 
-    def add_perceptron(self, p, color):
-        self.perceptrons.append(p)
-        self.perceptron_colors.append(color)
+    def add_func(self, f, color):
+        if not isinstance(f, VizFunc):
+            raise Exception('F must be subclass of VizFunc')
+
+        self.func.append(f)
+        self.func_colors.append(color)
 
     def show(self):
 
         min_x = sys.float_info.max
         max_x = sys.float_info.min
-        min_y = sys.float_info.max
-        max_y = sys.float_info.min
 
         for i in range(0, len(self.point_groups)):
-            g = self.point_groups[i]
-            c = self.point_colors[i]
-            mp.plot(g[:, 0:1], g[:, 1:2], linestyle='none', marker='o', markerfacecolor=c, markersize=self.pointsize)
+            points = self.point_groups[i]
+            color = self.point_colors[i]
+            mp.plot(points[:, 0:1], points[:, 1:2], linestyle='none', marker='o', markerfacecolor=color, markersize=self.pointsize)
 
-            min = np.asscalar(np.amin(g[:, 0:1], axis=0))
+            min = np.asscalar(np.amin(points[:, 0:1], axis=0))
             if min < min_x:
                 min_x = min
-            min = np.asscalar(np.amin(g[:, 1:2], axis=0))
-            if min < min_y:
-                min_y = min
 
-            max = np.asscalar(np.amax(g[:, 0:1], axis=0))
+            max = np.asscalar(np.amax(points[:, 0:1], axis=0))
             if max > max_x:
                 max_x = max
-            max = np.asscalar(np.amax(g[:, 1:2], axis=0))
-            if max > max_y:
-                max_y = max
 
         ext_pts = 3
         min_x -= ext_pts
         max_x += ext_pts
-        min_y -= ext_pts
-        max_y += ext_pts
 
-        for i in range(0, len(self.perceptrons)):
-            c = self.perceptron_colors[i]
-            p = self.perceptrons[i]
+        for i in range(0, len(self.func)):
+            color = self.func_colors[i]
+            func = self.func[i]
+
+            l1, l2 = func.limits()
+            if l1 < l2:
+                min_x = l1
+                max_x = l2
 
             x = min_x
             step = 0.1
-            prep_func = list()
+            func_data = list()
             while x <= max_x:
-                y = p.calc_var(x)
-                prep_func.append([x, y])
+                y = func.f(x)
+                func_data.append([x, y])
                 x += step
 
-            pg = np.array(prep_func)
-            mp.plot(pg[:, 0:1], pg[:, 1:2], color=c)
+            points = np.array(func_data)
+            mp.plot(points[:, 0:1], points[:, 1:2], color=color)
 
         mp.axhline(y=0, color=Color.GREY2)
         mp.axvline(x=0, color=Color.GREY2)

@@ -6,7 +6,7 @@ import utils.data_helper as dh
 import utils.viz_helper as vh
 
 
-class Linear2XPerceptron:
+class Linear2XPerceptron(vh.VizFunc):
     def __init__(self, w1=1, w2=1, b=0):
         self.config(w1, w2, b)
 
@@ -25,7 +25,7 @@ class Linear2XPerceptron:
     def calc_once(self, x1, x2):
         return self.C[0] * x1 + self.C[1] * x2 + self.C[2]
 
-    def calc_var(self, x1):
+    def f(self, x1):
         return np.sum((self.C[0] * x1 + self.C[2]) / (-1 * self.C[1]))
 
     def calc(self, X):
@@ -97,7 +97,7 @@ def n_points_tuning(size, learn_rate=0.1):
 
     viz = vh.Visualizer()
     viz.add_point_data(input_data, data_labels)
-    viz.add_perceptron(p, vh.Color.GREY3)
+    viz.add_func(p, vh.Color.GREY3)
     viz.show()
 
     convergence_cnt = 0
@@ -138,7 +138,7 @@ def n_points_tuning(size, learn_rate=0.1):
     print('Perceptron automatic adjustment completed')
     print('Result config ' + np.array2string(p.C))
 
-    viz.add_perceptron(p, vh.Color.YELLOW)
+    viz.add_func(p, vh.Color.YELLOW)
     viz.show()
 
 
