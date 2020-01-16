@@ -9,6 +9,11 @@ import utils.viz_helper as vh
 class Linear2XPerceptron(vh.VizFunc):
     def __init__(self, w1=1, w2=1, b=0):
         self.config(w1, w2, b)
+        self.min_x = 0
+        self.max_x = 0
+
+    def limits(self):
+        return self.min_x, self.max_x
 
     def config(self, w1, w2, b):
         self.W = np.array([w1, w2])
