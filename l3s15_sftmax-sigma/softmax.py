@@ -1,75 +1,33 @@
 #!/usr/bin/python3
 
-import math
-
 import numpy as np
 
 import utils.data_helper as dh
-import utils.viz_helper as vh
 
 
-class VizSigmoid(vh.VizFunc):
-    def f(self, x):
-        return sigmoid_func(x)
-
-    def limits(self):
-        return -10, 10
-
-
-def sigmoid_func(x):
-    return 1 / (1 + pow(math.e, (-1 * x)))
-
-
+# Softmax function takes only many parameters X - is array
 def softmax_func(x):
-    exp = np.exp(x[:, 0])
+    res = x.copy()
+    exp = np.exp(x)
     sum = exp.sum()
     for i in range(0, len(x)):
-        x[i, 1] = exp[i] * 1.0 / sum
-    return x
-
-
-# def softmax(L):
-#     expL = np.exp(L)
-#     sumExpL = sum(expL)
-#     result = []
-#     for i in expL:
-#         result.append(i * 1.0 / sumExpL)
-#     return result
+        res[i] = exp[i] / sum
+        res[i] = round(res[i], 2)
+    return res
 
 
 def main():
-    size = 200
-    input_data = dh.generate_random_floats(X=size, Y=2, min=0, max=1)
+    size = 10
+    inputs = 3
+    data = dh.generate_random_floats(X=size, Y=inputs, min=-3, max=3)
 
-    val = -10.
-    step = 0.1
-    for i in range(0, size):
-        input_data[i][0] = val
-        input_data[i][1] = sigmoid_func(val)
-        val += step
-
-    print('Sigmoid func result:')
-    print(input_data)
-    print()
-
-    viz = vh.Visualizer()
-    svf = VizSigmoid()
-    viz.add_func(svf, vh.Color.RED)
-    viz.show()
-
-    # res = softmax([5.0, 6.0, 7.0])
+    res = softmax_func([5, 6, 7])
     # print(res)
-    # res2 = softmax_func(np.array([[5.0, 0.0], [6.0, 0.0], [7.0, 0.0]]))
-    # print(res2)
-
-    input_data = softmax_func(input_data)
 
     print('Softmax func result:')
-    print(input_data)
-    print()
-
-    viz.add_point_group(input_data, vh.Color.GREEN)
-    viz.show()
+    for i in data:
+        res = softmax_func(i)
+        print(np.array2string(i) + ' -> ' + np.array2string(res))
 
 
 if __name__ == '__main__':
