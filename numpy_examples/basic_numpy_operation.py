@@ -2,9 +2,18 @@
 
 import numpy
 
-# Two matrices are initialized by value
+# Two matrices of size 2x2 are initialized by literal values
 x = numpy.array([[1, 2], [3, 4]])
 y = numpy.array([[7, 8], [9, 10]])
+
+# Create 2x3 matrix of float ones
+t = numpy.ones((2, 3))
+
+# Create vector of float zeros
+t = numpy.zeros(7)
+
+# Create matrix of same -1 int literal values
+t = numpy.full((4, 3), -1)
 
 print("X: ")
 print(x)
